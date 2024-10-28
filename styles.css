@@ -1,98 +1,86 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #e9ecef;
+    background-color: #f0f4f8;
     margin: 0;
     padding: 20px;
 }
 
 .container {
-    max-width: 500px;
+    max-width: 450px;
     margin: auto;
     padding: 20px;
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
 h1 {
     text-align: center;
     color: #333;
-    margin-bottom: 20px;
 }
 
 .chat {
-    max-height: 450px;
+    max-height: 400px;
     overflow-y: auto;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     padding: 15px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     border-radius: 10px;
-    background-color: #f8f9fa;
-    display: flex;
-    flex-direction: column;
+    background-color: #fafafa;
 }
 
 .chat-message {
-    margin: 5px 0;
-    padding: 12px 15px;
-    border-radius: 20px;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 15px;
     position: relative;
-    max-width: 80%;
-    word-wrap: break-word;
-    transition: background-color 0.3s;
 }
 
 .user {
     background-color: #d1e7dd;
     color: #0f5132;
     align-self: flex-end;
-    border-bottom-right-radius: 0; /* Remove corner for a chat bubble effect */
 }
 
 .bot {
     background-color: #cfe2ff;
     color: #1c3f94;
     align-self: flex-start;
-    border-bottom-left-radius: 0; /* Remove corner for a chat bubble effect */
 }
 
 input[type="text"] {
     width: calc(100% - 22px);
-    padding: 12px;
+    padding: 10px;
     border: 1px solid #ccc;
-    border-radius: 30px;
+    border-radius: 20px;
     margin-right: 10px;
     font-size: 16px;
-    transition: border 0.3s;
-}
-
-input[type="text"]:focus {
-    border-color: #0d6efd;
-    outline: none;
 }
 
 button {
-    padding: 12px 20px;
+    padding: 10px 15px;
     background-color: #0d6efd;
     color: white;
     border: none;
-    border-radius: 30px;
+    border-radius: 20px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: background-color 0.3s;
 }
 
 button:hover {
     background-color: #0056b3;
-    transform: translateY(-2px);
 }
 
-button:active {
-    transform: translateY(0);
+.chat-message.user {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    align-self: flex-end;
 }
 
-.chat-message.user:hover,
-.chat-message.bot:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+.chat-message.bot {
+    background-color: #cfe2ff;
+    color: #1c3f94;
+    align-self: flex-start;
 }
