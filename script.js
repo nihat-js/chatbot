@@ -1,31 +1,60 @@
-let chatHistory = [
-    // {
-    //     text: "I'm crafting a market analysis tool for fintech leaders. How should I initiate the process?",
-    //     role: "user"
-    // },
-    // {
-    //     text: "1. Identify the target audience: Clearly define the fintech leaders who will benefit from the analysis tool. Consider factors such as industry, company size, and job function.\n2. Define the purpose of the tool: Define the key objectives of the market analysis tool, such as identifying market trends, assessing competition, or evaluating potential new markets.\n3. Determine the data sources: Identify the data sources that will be used to generate the analysis, such as market research reports, industry publications, and financial data.\n4. Design the user interface: Determine the layout of the user interface, including the types of charts and graphs that should be included, and the placement of key information.\n5. Test and refine the tool: Conduct user testing to ensure that the tool is easy to use and provides valuable insights. Make any necessary adjustments based on feedback.",
-    //     role: "assistant"
-    // },
-    // {
-    //     text: "Can you elaborate on the second item?",
-    //     role: "user"
-    // }
-];
+let chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
+const chatElement = document.getElementById('chat');
 
-document.getElementById('sendButton').addEventListener('click', async function() {
+
+function saveChatHistory() {
+    if (chatHistory.length == 0) {
+        chatElement.style.display = "none" ;
+    } else {
+        chatElement.style.display = "block"
+    }
+    localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+}
+
+function loadChatHistory() {
+    chatHistory.forEach(message => {
+        chatElement.innerHTML += `<div class="chat-message ${message.role}">${message.role === 'user' ? 'You' : 'AI'}: ${message.text}</div>`;
+    });
+    chatElement.scrollTop = chatElement.scrollHeight;
+    if (chatHistory.length == 0) {
+        chatElement.style.display = "none"
+    }
+}
+
+loadChatHistory();
+
+
+document.getElementById('newChatButton').addEventListener('click', function () {
+    chatHistory = [];
+    chatElement.innerHTML = '';
+    saveChatHistory()
+});
+
+
+document.getElementsByTagName("input")[0].onkeydown = function (e) {
+    if (e.key == "Enter") {
+        console.log("gelorem")
+        getResponse()
+    }
+}
+
+document.getElementById('sendButton').addEventListener('click', getResponse)
+async function getResponse() {
     const userInput = document.getElementById('userInput').value;
     const chatElement = document.getElementById('chat');
+    const loader = document.getElementById('loader');
 
-    // Display user message
     chatElement.innerHTML += `<div class="chat-message user">You: ${userInput}</div>`;
     chatElement.scrollTop = chatElement.scrollHeight; // Scroll to bottom
 
-    // Clear input
     document.getElementById('userInput').value = '';
 
-    // Add user input to chat history
     chatHistory.push({ text: userInput, role: 'user' });
+
+    saveChatHistory(); // Save after each input
+
+
+    loader.style.display = 'block';
 
     // Call AI21 API
     try {
@@ -33,7 +62,7 @@ document.getElementById('sendButton').addEventListener('click', async function()
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer jNuDxuGsMxvxzPPehysZRIUTL6Nhmmeb'  // Replace with your AI21 API key
+                'Authorization': 'Bearer jNuDxuGsMxvxzPPehysZRIUTL6Nhmmeb' // Replace with your AI21 API key
             },
             body: JSON.stringify({
                 numResults: 1,
@@ -45,19 +74,26 @@ document.getElementById('sendButton').addEventListener('click', async function()
 
         const data = await response.json();
 
+        // Hide loader after receiving response
+        loader.style.display = 'none';
+
         if (data && data.outputs && data.outputs.length > 0) {
             const botResponse = data.outputs[0].text.trim();
             chatElement.innerHTML += `<div class="chat-message bot">AI: ${botResponse}</div>`;
             chatElement.scrollTop = chatElement.scrollHeight; // Scroll to bottom
 
+
             // Update chat history with bot response
             chatHistory.push({ text: botResponse, role: 'assistant' });
+            saveChatHistory(); // Save after receiving response
         } else {
             chatElement.innerHTML += `<div class="chat-message bot">AI: No response available.</div>`;
         }
 
     } catch (error) {
         console.error('Error:', error);
+        loader.style.display = 'none'; // Hide loader on error
         chatElement.innerHTML += `<div class="chat-message bot">AI: Error fetching the response.</div>`;
     }
-});
+}
+
